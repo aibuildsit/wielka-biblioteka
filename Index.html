@@ -1,1 +1,164 @@
 
+
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Wielka Biblioteka</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f5f1e9;
+      color: #30251e;
+    }
+    header {
+      background: #38251c;
+      color: white;
+      padding: 22px;
+      text-align: center;
+    }
+    header h1 { margin: 0; font-size: 28px; }
+    header p { color: #e8d6c2; }
+    nav {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 14px;
+      background: #eadfce;
+    }
+    nav button {
+      border: 0;
+      padding: 11px 16px;
+      border-radius: 20px;
+      background: white;
+      color: #38251c;
+      cursor: pointer;
+    }
+    main { max-width: 950px; margin: auto; padding: 24px 16px; }
+    .welcome {
+      background: white;
+      padding: 24px;
+      border-radius: 16px;
+      margin-bottom: 22px;
+    }
+    input {
+      width: 100%;
+      padding: 13px;
+      border: 1px solid #c9b9a6;
+      border-radius: 10px;
+      font-size: 16px;
+      margin: 10px 0 20px;
+    }
+    .books {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 16px;
+    }
+    .book {
+      background: white;
+      padding: 20px;
+      border-radius: 14px;
+      text-align: center;
+      box-shadow: 0 3px 12px #00000010;
+    }
+    .cover { font-size: 48px; }
+    .book button, .action {
+      border: 0;
+      border-radius: 9px;
+      padding: 11px 16px;
+      background: #70452f;
+      color: white;
+      cursor: pointer;
+    }
+    footer {
+      text-align: center;
+      padding: 25px;
+      color: #76685b;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>📚 Wielka Biblioteka</h1>
+    <p>Twoje miejsce pełne opowieści</p>
+  </header>
+
+  <nav>
+    <button onclick="showSection('home')">Strona główna</button>
+    <button onclick="showSection('library')">Biblioteka</button>
+    <button onclick="showSection('community')">Społeczność</button>
+    <button onclick="showSection('authors')">Autorzy</button>
+  </nav>
+
+  <main>
+    <section class="welcome" id="home">
+      <h2>Witaj w Wielkiej Bibliotece!</h2>
+      <p>Odkrywaj historie, czytaj książki i poznawaj autorów.</p>
+      <button class="action" onclick="showSection('library')">Odkryj książki</button>
+    </section>
+
+    <section id="library">
+      <h2>📖 Nasza biblioteka</h2>
+      <input id="search" placeholder="Szukaj książki..." oninput="searchBooks()">
+      <div class="books" id="books">
+        <article class="book">
+          <div class="cover">🐹</div>
+          <h3>Tofik i Oreo</h3>
+          <p>Tajemnica Zaginionego Królestwa</p>
+          <button onclick="readBook()">Czytaj</button>
+        </article>
+        <article class="book">
+          <div class="cover">🐉</div>
+          <h3>Smocza Przygoda</h3>
+          <p>Fantastyczna opowieść</p>
+          <button onclick="readBook()">Czytaj</button>
+        </article>
+        <article class="book">
+          <div class="cover">🚀</div>
+          <h3>Podróż w Kosmos</h3>
+          <p>Przygoda poza Ziemią</p>
+          <button onclick="readBook()">Czytaj</button>
+        </article>
+      </div>
+    </section>
+
+    <section id="community">
+      <h2>💬 Społeczność</h2>
+      <p>Już niedługo będzie tu miejsce na rozmowy czytelników!</p>
+    </section>
+
+    <section id="authors">
+      <h2>✍️ Autorzy</h2>
+      <p>Już niedługo będzie tu miejsce dla autorów i ich książek!</p>
+    </section>
+  </main>
+
+  <footer>© 2026 Wielka Biblioteka</footer>
+
+  <script>
+    function showSection(id) {
+      document.querySelectorAll('main section').forEach(section => {
+        section.style.display = section.id === id ? 'block' : 'none';
+      });
+    }
+
+    function searchBooks() {
+      const query = document.getElementById('search').value.toLowerCase();
+      document.querySelectorAll('.book').forEach(book => {
+        book.style.display = book.innerText.toLowerCase().includes(query)
+          ? 'block' : 'none';
+      });
+    }
+
+    function readBook() {
+      alert('Czytnik książek dodamy w kolejnym etapie!');
+    }
+
+    showSection('home');
+  </script>
+</body>
+</html>
