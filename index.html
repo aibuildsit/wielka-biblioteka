@@ -526,16 +526,13 @@ function previousPage(){
   if(currentPage>0){
     currentPage--;
     renderPage();
-  }else if(currentChapter>0){
-    currentChapter--;
-    requestAnimationFrame(()=>{
-      renderChapter();
-      currentPage=pages.length-1;
-      renderPage();
-    });
+}else if(currentChapter>0){
+  currentChapter--;
+  currentPage=0;
+  renderChapter();
+  currentPage=pages.length-1;
+  renderPage();
   }
-}
-
 function backToLibrary(){
   showSection("library");
 }
