@@ -3,133 +3,266 @@
 <html lang="pl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Wielka Biblioteka</title>
+
 <style>
 *{box-sizing:border-box}
-body{margin:0;font-family:Arial,sans-serif;background:#f5f1e9;color:#30251e}
-header{background:#38251c;color:white;padding:22px;text-align:center}
+
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f5f1e9;
+  color:#30251e;
+}
+
+header{
+  background:#38251c;
+  color:white;
+  padding:22px;
+  text-align:center;
+}
+
 header h1{margin:0;font-size:28px}
 header p{color:#e8d6c2}
-nav{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;padding:14px;background:#eadfce}
-button{border:0;padding:11px 16px;border-radius:10px;background:#70452f;color:white;cursor:pointer;font-size:15px}
+
+nav{
+  display:flex;
+  justify-content:center;
+  gap:10px;
+  flex-wrap:wrap;
+  padding:14px;
+  background:#eadfce;
+}
+
+button{
+  border:0;
+  padding:11px 16px;
+  border-radius:10px;
+  background:#70452f;
+  color:white;
+  cursor:pointer;
+  font-size:15px;
+}
+
 button:hover{opacity:.85}
 button:disabled{opacity:.4;cursor:not-allowed}
-nav button{border-radius:20px;background:white;color:#38251c}
-main{max-width:950px;margin:auto;padding:24px 16px}
-.welcome,.book,.reader,.panel{background:white;padding:24px;border-radius:16px;margin-bottom:20px;box-shadow:0 3px 12px #00000010}
-input,textarea{width:100%;padding:13px;border:1px solid #c9b9a6;border-radius:10px;font-size:16px;margin:8px 0 18px;font-family:Arial}
+
+nav button{
+  border-radius:20px;
+  background:white;
+  color:#38251c;
+}
+
+main{
+  max-width:950px;
+  margin:auto;
+  padding:24px 16px;
+}
+
+.welcome,.book,.reader,.panel{
+  background:white;
+  padding:24px;
+  border-radius:16px;
+  margin-bottom:20px;
+  box-shadow:0 3px 12px #00000010;
+}
+
+input,textarea{
+  width:100%;
+  padding:13px;
+  border:1px solid #c9b9a6;
+  border-radius:10px;
+  font-size:16px;
+  margin:8px 0 18px;
+  font-family:Arial,sans-serif;
+}
+
 textarea{min-height:130px;resize:vertical}
 label{font-weight:bold}
-.books{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px}
+
+.books{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+  gap:16px;
+}
+
 .book{text-align:center}
 .cover{font-size:52px}
-.reader{line-height:1.8}
-.reader-text{white-space:pre-line;font-size:18px;line-height:1.9;margin-top:25px}
-.reader-controls{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:25px}
-.secondary{background:#eadfce;color:#38251c}
+
+.reader{line-height:1.6}
+
+.reader-text{
+  font-size:18px;
+  line-height:1.65;
+  white-space:pre-wrap;
+  overflow:hidden;
+  overflow-wrap:anywhere;
+  height:clamp(160px,calc(100dvh - 430px),440px);
+  min-height:160px;
+  max-height:440px;
+  padding:18px;
+  background:#fffdf9;
+  border:1px solid #eadfce;
+  border-radius:12px;
+}
+
+.reader-controls{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  margin-top:18px;
+}
+
+.reader-top{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.page-number{
+  text-align:center;
+  color:#76685b;
+  font-size:14px;
+  margin-top:12px;
+}
+
+.secondary{
+  background:#eadfce;
+  color:#38251c;
+}
+
 .hidden{display:none!important}
-.chapter-form{background:#f5f1e9;padding:15px;border-radius:12px;margin-bottom:15px}
-footer{text-align:center;padding:25px;color:#76685b}
-.notice{background:#f5f1e9;padding:12px;border-radius:10px;font-size:14px}
+
+.chapter-form{
+  background:#f5f1e9;
+  padding:15px;
+  border-radius:12px;
+  margin-bottom:15px;
+}
+
+footer{
+  text-align:center;
+  padding:25px;
+  color:#76685b;
+}
+
+@media(max-width:600px){
+  main{padding:14px 10px}
+  .reader{padding:16px}
+  .reader-text{font-size:16px;line-height:1.6}
+  .reader-controls button{padding:10px}
+}
 </style>
 </head>
+
 <body>
 
 <header>
-<h1>📚 Wielka Biblioteka</h1>
-<p>Twoje miejsce pełne opowieści</p>
+  <h1>📚 Wielka Biblioteka</h1>
+  <p>Twoje miejsce pełne opowieści</p>
 </header>
 
 <nav>
-<button onclick="showSection('home')">Strona główna</button>
-<button onclick="showSection('library')">Biblioteka</button>
-<button onclick="showSection('add')">➕ Dodaj książkę</button>
-<button onclick="showSection('community')">Społeczność</button>
-<button onclick="showSection('authors')">Autorzy</button>
+  <button onclick="showSection('home')">Strona główna</button>
+  <button onclick="showSection('library')">Biblioteka</button>
+  <button onclick="showSection('add')">➕ Dodaj książkę</button>
+  <button onclick="showSection('community')">Społeczność</button>
+  <button onclick="showSection('authors')">Autorzy</button>
 </nav>
 
 <main>
 
 <section id="home">
-<div class="welcome">
-<h2>Witaj w Wielkiej Bibliotece!</h2>
-<p>Odkrywaj historie, czytaj książki i poznawaj autorów.</p>
-<button onclick="showSection('library')">Odkryj książki</button>
-<button onclick="showSection('add')">Dodaj własną książkę</button>
-</div>
+  <div class="welcome">
+    <h2>Witaj w Wielkiej Bibliotece!</h2>
+    <p>Odkrywaj historie, czytaj książki i poznawaj autorów.</p>
+    <button onclick="showSection('library')">Odkryj książki</button>
+    <button onclick="showSection('add')">Dodaj własną książkę</button>
+  </div>
 </section>
 
 <section id="library" class="hidden">
-<h2>📖 Nasza biblioteka</h2>
-<input id="search" placeholder="Szukaj książki..." oninput="searchBooks()">
-<div class="books" id="books"></div>
+  <h2>📖 Nasza biblioteka</h2>
+  <input id="search" placeholder="Szukaj książki..." oninput="searchBooks()">
+  <div class="books" id="books"></div>
 </section>
 
 <section id="reader" class="reader hidden">
-<button class="secondary" onclick="backToLibrary()">← Wróć do biblioteki</button>
-<h2 id="reader-title"></h2>
-<h3 id="chapter-title"></h3>
-<div id="reader-text" class="reader-text"></div>
-<div class="reader-controls">
-<button class="secondary" id="previous" onclick="changeChapter(-1)">← Poprzedni rozdział</button>
-<button id="next" onclick="changeChapter(1)">Następny rozdział →</button>
-</div>
+  <div class="reader-top">
+    <button class="secondary" onclick="backToLibrary()">← Biblioteka</button>
+    <span id="reader-author"></span>
+  </div>
+
+  <h2 id="reader-title"></h2>
+  <h3 id="chapter-title"></h3>
+
+  <div id="reader-text" class="reader-text"></div>
+  <div class="page-number" id="page-number"></div>
+
+  <div class="reader-controls">
+    <button class="secondary" id="previous" onclick="previousPage()">← Poprzednia</button>
+    <button id="next" onclick="nextPage()">Następna →</button>
+  </div>
 </section>
 
 <section id="add" class="hidden">
-<div class="panel">
-<h2>➕ Dodaj własną książkę</h2>
-<p>Stwórz swoją opowieść i dodaj ją do biblioteki!</p>
+  <div class="panel">
+    <h2>➕ Dodaj własną książkę</h2>
+    <p>Stwórz swoją opowieść i dodaj ją do biblioteki!</p>
 
-<form id="book-form">
-<label for="book-title">Tytuł książki</label>
-<input id="book-title" required maxlength="100" placeholder="Np. Wielka przygoda">
+    <form id="book-form">
+      <label for="book-title">Tytuł książki</label>
+      <input id="book-title" required maxlength="100" placeholder="Tytuł książki">
 
-<label for="book-author">Autor</label>
-<input id="book-author" required maxlength="60" placeholder="Imię lub pseudonim">
+      <label for="book-author">Autor</label>
+      <input id="book-author" required maxlength="60" placeholder="Imię lub pseudonim">
 
-<label for="book-description">Opis książki</label>
-<textarea id="book-description" required maxlength="1000" placeholder="O czym jest Twoja książka?"></textarea>
+      <label for="book-description">Opis książki</label>
+      <textarea id="book-description" required maxlength="1000" placeholder="O czym jest Twoja książka?"></textarea>
 
-<label for="book-cover">Okładka – wybierz symbol</label>
-<select id="book-cover" style="width:100%;padding:13px;margin:8px 0 18px;border-radius:10px">
-<option>📘</option>
-<option>📕</option>
-<option>📗</option>
-<option>📙</option>
-<option>🐹</option>
-<option>🐉</option>
-<option>🚀</option>
-<option>🏰</option>
-<option>⭐</option>
-<option>🐱</option>
-</select>
+      <label for="book-cover">Okładka</label>
+      <select id="book-cover" style="width:100%;padding:13px;margin:8px 0 18px;border-radius:10px">
+        <option>📘</option>
+        <option>📕</option>
+        <option>📗</option>
+        <option>📙</option>
+        <option>🐹</option>
+        <option>🐉</option>
+        <option>🚀</option>
+        <option>🏰</option>
+        <option>⭐</option>
+        <option>🐱</option>
+      </select>
 
-<h3>📖 Rozdziały</h3>
-<div id="chapters-container"></div>
+      <h3>📖 Rozdziały</h3>
+      <div id="chapters-container"></div>
 
-<button type="button" class="secondary" onclick="addChapter()">+ Dodaj kolejny rozdział</button>
+      <button type="button" class="secondary" onclick="addChapter()">+ Dodaj rozdział</button>
 
-<hr style="border:0;border-top:1px solid #eadfce;margin:22px 0">
+      <hr style="border:0;border-top:1px solid #eadfce;margin:22px 0">
 
-<button type="submit">📚 Dodaj książkę do biblioteki</button>
-</form>
-</div>
+      <button type="submit">📚 Opublikuj książkę</button>
+    </form>
+  </div>
 </section>
 
 <section id="community" class="hidden">
-<div class="panel">
-<h2>💬 Społeczność</h2>
-<p>Już niedługo będzie tu miejsce na rozmowy czytelników!</p>
-</div>
+  <div class="panel">
+    <h2>💬 Społeczność</h2>
+    <p>Już niedługo będzie tu miejsce na rozmowy czytelników!</p>
+  </div>
 </section>
 
 <section id="authors" class="hidden">
-<div class="panel">
-<h2>✍️ Autorzy</h2>
-<p>Odkrywaj twórców książek w naszej bibliotece.</p>
-</div>
+  <div class="panel">
+    <h2>✍️ Autorzy</h2>
+    <p>Odkrywaj twórców książek w naszej bibliotece.</p>
+  </div>
 </section>
 
 </main>
@@ -137,27 +270,32 @@ footer{text-align:center;padding:25px;color:#76685b}
 <footer>© 2026 Wielka Biblioteka</footer>
 
 <script>
-const defaultBooks = [
+
+const defaultBooks=[
 {
 id:"tofik",
 title:"Tofik i Oreo",
 author:"Autor",
 subtitle:"Tajemnica Zaginionego Królestwa",
 cover:"🐹",
-chapters:[{
-title:"Rozdział 1: Tajemnicza wiadomość",
-text:`Pewnego spokojnego poranka Tofik i Oreo odkryli na podłodze tajemniczą kopertę.
+chapters:[
+{
+title:"Rozdział 1: Legenda Zaginionego Ogórka",
+text:`Był poniedziałek, godzina siódma trzydzieści rano. W całym domu panowała cisza.
 
-Na kopercie widniał dziwny symbol przedstawiający koronę i małą gwiazdę.
+Tofik i Oreo jeszcze nie wiedzieli, że ten dzień będzie zupełnie inny niż wszystkie.
 
-— Oreo, patrz! — zawołał Tofik. — Ktoś zostawił nam wiadomość!
+Na środku pokoju leżała tajemnicza koperta. Była zaadresowana do dwóch małych odkrywców.
 
-Oreo ostrożnie otworzył kopertę. W środku znajdowała się mapa prowadząca do miejsca, którego nie było na żadnej zwykłej mapie.
+— Oreo, zobacz! — zawołał Tofik.
 
-— Wygląda na to, że czeka nas przygoda — powiedział Oreo.
+W środku znajdowała się mapa prowadząca do Zaginionego Królestwa.
 
-I tak rozpoczęła się ich niezwykła wyprawa.`
-}]
+— Wygląda na to, że czeka nas przygoda! — powiedział Oreo.
+
+I tak rozpoczęła się niezwykła historia dwóch przyjaciół.`
+}
+]
 },
 {
 id:"smok",
@@ -165,7 +303,8 @@ title:"Smocza Przygoda",
 author:"Autor",
 subtitle:"Fantastyczna opowieść",
 cover:"🐉",
-chapters:[{
+chapters:[
+{
 title:"Rozdział 1: Smok za górami",
 text:`Za siedmioma górami znajdowała się kraina, w której smoki żyły obok ludzi.
 
@@ -176,7 +315,8 @@ Kamień świecił delikatnym, niebieskim światłem.
 Iskierka postanowił dowiedzieć się, skąd pochodzi niezwykły przedmiot.
 
 Nie wiedział jeszcze, że to początek największej przygody jego życia.`
-}]
+}
+]
 },
 {
 id:"kosmos",
@@ -184,7 +324,8 @@ title:"Podróż w Kosmos",
 author:"Autor",
 subtitle:"Przygoda poza Ziemią",
 cover:"🚀",
-chapters:[{
+chapters:[
+{
 title:"Rozdział 1: Start rakiety",
 text:`W roku 2045 ludzie przygotowywali się do kolejnej wielkiej wyprawy kosmicznej.
 
@@ -195,190 +336,372 @@ Młoda astronautka Lena weszła na pokład statku kosmicznego o nazwie Orion.
 Silniki zaczęły pracować, a rakieta powoli oderwała się od Ziemi.
 
 Przed załogą otwierał się ogromny, nieznany kosmos.`
-}]
+}
+]
 }
 ];
 
-let customBooks = [];
-try {
-customBooks = JSON.parse(localStorage.getItem("wielkaBibliotekaBooks")) || [];
-if (!Array.isArray(customBooks)) customBooks = [];
-} catch(e) {
-customBooks = [];
+let customBooks=[];
+
+try{
+  const saved=JSON.parse(localStorage.getItem("wielkaBibliotekaBooks"));
+  if(Array.isArray(saved)) customBooks=saved;
+}catch(e){
+  customBooks=[];
 }
 
-let books = [...defaultBooks,...customBooks];
-let currentBook = null;
-let currentChapter = 0;
-let chapterCount = 0;
+let books=[...defaultBooks,...customBooks];
+let currentBook=null;
+let currentChapter=0;
+let currentPage=0;
+let pages=[];
 
 function showSection(id){
-document.querySelectorAll("main section").forEach(section=>{
-section.classList.add("hidden");
-});
-document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll("main section").forEach(section=>{
+    section.classList.add("hidden");
+  });
+  document.getElementById(id).classList.remove("hidden");
 }
 
 function renderBooks(){
-const container=document.getElementById("books");
-container.innerHTML="";
+  const container=document.getElementById("books");
+  container.innerHTML="";
 
-books.forEach(book=>{
-const card=document.createElement("article");
-card.className="book";
+  books.forEach(book=>{
+    const card=document.createElement("article");
+    card.className="book";
 
-const cover=document.createElement("div");
-cover.className="cover";
-cover.textContent=book.cover;
+    const cover=document.createElement("div");
+    cover.className="cover";
+    cover.textContent=book.cover||"📘";
 
-const title=document.createElement("h3");
-title.textContent=book.title;
+    const title=document.createElement("h3");
+    title.textContent=book.title;
 
-const author=document.createElement("p");
-author.textContent="Autor: "+(book.author||"Nieznany");
+    const author=document.createElement("p");
+    author.textContent="Autor: "+(book.author||"Nieznany");
 
-const subtitle=document.createElement("p");
-subtitle.textContent=book.subtitle||book.description||"";
+    const description=document.createElement("p");
+    description.textContent=book.subtitle||book.description||"";
 
-const button=document.createElement("button");
-button.textContent="Czytaj";
-button.onclick=()=>openBook(book.id);
+    const button=document.createElement("button");
+    button.textContent="Czytaj";
+    button.onclick=()=>openBook(book.id);
 
-card.append(cover,title,author,subtitle,button);
-container.appendChild(card);
-});
-searchBooks();
+    card.append(cover,title,author,description,button);
+    container.appendChild(card);
+  });
+
+  searchBooks();
 }
 
 function searchBooks(){
-const query=document.getElementById("search").value.toLowerCase();
-document.querySelectorAll(".book").forEach(card=>{
-card.style.display=card.innerText.toLowerCase().includes(query)?"block":"none";
-});
+  const query=document.getElementById("search").value.toLowerCase();
+
+  document.querySelectorAll(".book").forEach(card=>{
+    card.style.display=
+      card.innerText.toLowerCase().includes(query)?"block":"none";
+  });
 }
 
 function openBook(id){
-currentBook=books.find(book=>book.id===id);
-if(!currentBook)return;
-currentChapter=0;
-showSection("reader");
-renderChapter();
+  currentBook=books.find(book=>book.id===id);
+  if(!currentBook)return;
+
+  currentChapter=0;
+  currentPage=0;
+  showSection("reader");
+
+  requestAnimationFrame(renderChapter);
+}
+
+function makePages(text){
+  const area=document.getElementById("reader-text");
+  const width=area.clientWidth;
+  const height=area.clientHeight;
+
+  if(!width||!height)return [text];
+
+  const style=getComputedStyle(area);
+  const measure=document.createElement("div");
+
+  measure.style.cssText=`
+    position:fixed;
+    left:-10000px;
+    top:0;
+    visibility:hidden;
+    box-sizing:border-box;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+  `;
+
+  measure.style.width=width+"px";
+  measure.style.padding=style.padding;
+  measure.style.border=style.border;
+  measure.style.font=style.font;
+  measure.style.fontSize=style.fontSize;
+  measure.style.lineHeight=style.lineHeight;
+  measure.style.letterSpacing=style.letterSpacing;
+
+  document.body.appendChild(measure);
+
+  const words=text.match(/\S+\s*/g)||[];
+  const result=[];
+  let start=0;
+
+  while(start<words.length){
+    let low=start+1;
+    let high=words.length;
+    let best=start+1;
+
+    while(low<=high){
+      const middle=Math.floor((low+high)/2);
+      measure.textContent=words.slice(start,middle).join("");
+
+      if(measure.scrollHeight<=height+1){
+        best=middle;
+        low=middle+1;
+      }else{
+        high=middle-1;
+      }
+    }
+
+    result.push(words.slice(start,best).join(""));
+    start=best;
+  }
+
+  measure.remove();
+  return result.length?result:[""];
 }
 
 function renderChapter(){
-const chapter=currentBook.chapters[currentChapter];
+  const chapter=currentBook.chapters[currentChapter];
 
-document.getElementById("reader-title").textContent=
-currentBook.cover+" "+currentBook.title;
+  document.getElementById("reader-title").textContent=
+    (currentBook.cover||"📘")+" "+currentBook.title;
 
-document.getElementById("chapter-title").textContent=chapter.title;
-document.getElementById("reader-text").textContent=chapter.text;
+  document.getElementById("reader-author").textContent=
+    "Autor: "+(currentBook.author||"Nieznany");
 
-document.getElementById("previous").disabled=currentChapter===0;
-document.getElementById("next").disabled=
-currentChapter===currentBook.chapters.length-1;
+  document.getElementById("chapter-title").textContent=
+    chapter.title;
+
+  pages=makePages(chapter.text);
+  currentPage=Math.min(currentPage,pages.length-1);
+  renderPage();
 }
 
-function changeChapter(direction){
-const nextChapter=currentChapter+direction;
-if(nextChapter<0||nextChapter>=currentBook.chapters.length)return;
-currentChapter=nextChapter;
-renderChapter();
+function renderPage(){
+  document.getElementById("reader-text").textContent=
+    pages[currentPage]||"";
+
+  document.getElementById("page-number").textContent=
+    "Strona "+(currentPage+1)+" z "+pages.length+
+    " • Rozdział "+(currentChapter+1)+" z "+currentBook.chapters.length;
+
+  const firstPage=currentPage===0&&currentChapter===0;
+  const lastPage=currentPage===pages.length-1&&
+    currentChapter===currentBook.chapters.length-1;
+
+  document.getElementById("previous").disabled=firstPage;
+  document.getElementById("next").disabled=lastPage;
+
+  document.getElementById("next").textContent=
+    lastPage?"Koniec książki":
+    currentPage===pages.length-1?"Następny rozdział →":"Następna →";
+}
+
+function nextPage(){
+  if(currentPage<pages.length-1){
+    currentPage++;
+    renderPage();
+  }else if(currentChapter<currentBook.chapters.length-1){
+    currentChapter++;
+    currentPage=0;
+    renderChapter();
+  }
+}
+
+function previousPage(){
+  if(currentPage>0){
+    currentPage--;
+    renderPage();
+  }else if(currentChapter>0){
+    currentChapter--;
+    requestAnimationFrame(()=>{
+      renderChapter();
+      currentPage=pages.length-1;
+      renderPage();
+    });
+  }
 }
 
 function backToLibrary(){
-showSection("library");
+  showSection("library");
 }
+
+</script>
+
+<script>
+
+let chapterCount=0;
 
 function addChapter(){
-chapterCount++;
+  chapterCount++;
 
-const container=document.getElementById("chapters-container");
-const wrapper=document.createElement("div");
-wrapper.className="chapter-form";
+  const container=document.getElementById("chapters-container");
 
-const heading=document.createElement("h4");
-heading.textContent="Rozdział "+chapterCount;
+  const wrapper=document.createElement("div");
+  wrapper.className="chapter-form";
 
-const title=document.createElement("input");
-title.className="chapter-title";
-title.required=true;
-title.maxLength=120;
-title.placeholder="Tytuł rozdziału";
+  const heading=document.createElement("h4");
+  heading.textContent="Rozdział "+chapterCount;
 
-const text=document.createElement("textarea");
-text.className="chapter-text";
-text.required=true;
-text.maxLength=50000;
-text.placeholder="Napisz treść rozdziału...";
+  const titleLabel=document.createElement("label");
+  titleLabel.textContent="Tytuł rozdziału";
 
-wrapper.append(heading,title,text);
-container.appendChild(wrapper);
+  const title=document.createElement("input");
+  title.type="text";
+  title.className="new-chapter-title";
+  title.placeholder="Np. Tajemnicze odkrycie";
+  title.required=true;
+
+  const textLabel=document.createElement("label");
+  textLabel.textContent="Treść rozdziału";
+
+  const content=document.createElement("textarea");
+  content.className="new-chapter-text";
+  content.placeholder="Napisz tutaj treść rozdziału...";
+  content.required=true;
+
+  const remove=document.createElement("button");
+  remove.type="button";
+  remove.className="secondary";
+  remove.textContent="Usuń rozdział";
+
+  remove.onclick=()=>{
+    wrapper.remove();
+    updateChapterNumbers();
+  };
+
+  wrapper.append(
+    heading,
+    titleLabel,
+    title,
+    textLabel,
+    content,
+    remove
+  );
+
+  container.appendChild(wrapper);
+  updateChapterNumbers();
 }
 
-document.getElementById("book-form").addEventListener("submit",function(e){
-e.preventDefault();
+function updateChapterNumbers(){
+  const forms=document.querySelectorAll(".chapter-form");
+  chapterCount=forms.length;
 
-const title=document.getElementById("book-title").value.trim();
-const author=document.getElementById("book-author").value.trim();
-const description=document.getElementById("book-description").value.trim();
-const cover=document.getElementById("book-cover").value;
+  forms.forEach((form,index)=>{
+    form.querySelector("h4").textContent=
+      "Rozdział "+(index+1);
+  });
+}
 
-const chapterForms=document.querySelectorAll(".chapter-form");
-const chapters=[];
+document.getElementById("book-form").addEventListener("submit",function(event){
 
-chapterForms.forEach((form,index)=>{
-const chapterTitle=form.querySelector(".chapter-title").value.trim();
-const chapterText=form.querySelector(".chapter-text").value.trim();
+  event.preventDefault();
 
-if(chapterTitle&&chapterText){
-chapters.push({
-title:"Rozdział "+(index+1)+": "+chapterTitle,
-text:chapterText
+  const title=document.getElementById("book-title").value.trim();
+  const author=document.getElementById("book-author").value.trim();
+  const description=document.getElementById("book-description").value.trim();
+  const cover=document.getElementById("book-cover").value;
+
+  const chapterForms=document.querySelectorAll(".chapter-form");
+
+  if(!chapterForms.length){
+    alert("Dodaj przynajmniej jeden rozdział!");
+    return;
+  }
+
+  const chapters=[];
+
+  for(const form of chapterForms){
+    const chapterTitle=form.querySelector(".new-chapter-title").value.trim();
+    const chapterText=form.querySelector(".new-chapter-text").value.trim();
+
+    if(!chapterTitle||!chapterText){
+      alert("Uzupełnij tytuł i treść każdego rozdziału.");
+      return;
+    }
+
+    chapters.push({
+      title:chapterTitle,
+      text:chapterText
+    });
+  }
+
+  const newBook={
+    id:"custom-"+Date.now(),
+    title:title,
+    author:author,
+    subtitle:description,
+    description:description,
+    cover:cover,
+    chapters:chapters
+  };
+
+  customBooks.push(newBook);
+
+  try{
+    localStorage.setItem(
+      "wielkaBibliotekaBooks",
+      JSON.stringify(customBooks)
+    );
+  }catch(error){
+    customBooks.pop();
+    alert("Nie udało się zapisać książki. Pamięć przeglądarki może być pełna.");
+    return;
+  }
+
+  books=[...defaultBooks,...customBooks];
+
+  renderBooks();
+  this.reset();
+
+  document.getElementById("chapters-container").innerHTML="";
+  chapterCount=0;
+
+  alert("Książka została dodana do biblioteki!");
+
+  showSection("library");
 });
-}
-});
 
-if(!title||!author||!description||chapters.length===0){
-alert("Uzupełnij wszystkie pola i dodaj przynajmniej jeden rozdział!");
-return;
-}
+window.addEventListener("resize",()=>{
+  if(!currentBook||document.getElementById("reader").classList.contains("hidden")){
+    return;
+  }
 
-const newBook={
-id:"book-"+Date.now(),
-title,
-author,
-subtitle:description,
-description,
-cover,
-chapters
-};
+  clearTimeout(window.readerResizeTimer);
 
-customBooks.push(newBook);
+  window.readerResizeTimer=setTimeout(()=>{
+    const oldPosition=pages.length>1?
+      currentPage/(pages.length-1):0;
 
-try{
-localStorage.setItem("wielkaBibliotekaBooks",JSON.stringify(customBooks));
-}catch(error){
-customBooks.pop();
-alert("Nie udało się zapisać książki. Pamięć przeglądarki może być pełna.");
-return;
-}
+    const chapter=currentBook.chapters[currentChapter];
 
-books=[...defaultBooks,...customBooks];
-renderBooks();
+    pages=makePages(chapter.text);
 
-this.reset();
-document.getElementById("chapters-container").innerHTML="";
-chapterCount=0;
+    currentPage=Math.round(
+      oldPosition*(pages.length-1)
+    );
 
-alert("🎉 Książka została dodana do biblioteki!");
-
-showSection("library");
+    renderPage();
+  },150);
 });
 
 addChapter();
 renderBooks();
-showSection("home");
+
 </script>
 
 </body>
