@@ -642,9 +642,172 @@ function updateChapterNumbers() {
   });
 }
 
+// LOGOWANIE I REJESTRACJA PRZY DODAWANIU KSIĄŻKI
+
+async function requireLogin() {
+  const { data: sessionData } =
+    await supabaseClient.auth.getSession();
+
+  if (sessionData.session) return true;
+
+  return new Promise((resolve) => {
+    const modal = document.createElement("div");
+
+    modal.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:#0009;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:99999;
+      padding:20px;
+    `;
+
+    modal.innerHTML = `
+      <div style="
+        background:var(--card-bg, white);
+        color:var(--text-color, #222);
+        padding:25px;
+        border-radius:18px;
+        width:100%;
+        max-width:380px;
+      ">
+        <h2 id="auth-title">🔐 Zaloguj się</h2>
+
+        <input id="auth-email" type="email"
+          placeholder="Adres e-mail"
+          style="width:100%;padding:12px;margin:7px 0;">
+
+        <input id="auth-password" type="password"
+          placeholder="Hasło"
+          style="width:100%;padding:12px;margin:7px 0;">
+
+        <input id="auth-username" type="text"
+          placeholder="Twój nick"
+          style="width:100%;padding:12px;margin:7px 0;display:none;">
+
+        <button id="auth-submit"
+          style="width:100%;padding:12px;margin-top:12px;">
+          Zaloguj się
+        </button>
+
+        <button id="auth-switch"
+          style="width:100%;padding:10px;margin-top:8px;">
+          Nie masz konta? Zarejestruj się
+        </button>
+
+        <button id="auth-cancel"
+          style="width:100%;padding:10px;margin-top:5px;">
+          Anuluj
+        </button>
+
+        <p id="auth-error" style="color:red;"></p>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    let registering = false;
+
+    const email = modal.querySelector("#auth-email");
+    const password = modal.querySelector("#auth-password");
+    const username = modal.querySelector("#auth-username");
+    const submit = modal.querySelector("#auth-submit");
+    const switchButton = modal.querySelector("#auth-switch");
+    const errorBox = modal.querySelector("#auth-error");
+
+    switchButton.onclick = () => {
+      registering = !registering;
+
+      modal.querySelector("#auth-title").textContent =
+        registering ? "📝 Utwórz konto" : "🔐 Zaloguj się";
+
+      username.style.display = registering ? "block" : "none";
+
+      submit.textContent =
+        registering ? "Zarejestruj się" : "Zaloguj się";
+
+      switchButton.textContent =
+        registering
+          ? "Masz już konto? Zaloguj się"
+          : "Nie masz konta? Zarejestruj się";
+    };
+
+    modal.querySelector("#auth-cancel").onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+
+    submit.onclick = async () => {
+      errorBox.textContent = "";
+
+      const mail = email.value.trim();
+      const pass = password.value;
+      const nick = username.value.trim();
+
+      if (!mail || !pass || (registering && !nick)) {
+        errorBox.textContent = "Uzupełnij wszystkie pola.";
+        return;
+      }
+
+      submit.disabled = true;
+
+      try {
+        if (registering) {
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+              email: mail,
+              password: pass
+            });
+
+          if (error) throw error;
+
+          if (!data.session) {
+            errorBox.textContent =
+              "Konto utworzone! Potwierdź adres e-mail, a potem zaloguj się.";
+            submit.disabled = false;
+            return;
+          }
+
+          const { error: profileError } =
+            await supabaseClient.from("profiles").insert({
+              user_id: data.user.id,
+              username: nick
+            });
+
+          if (profileError) throw profileError;
+
+        } else {
+          const { error } =
+            await supabaseClient.auth.signInWithPassword({
+              email: mail,
+              password: pass
+            });
+
+          if (error) throw error;
+        }
+
+        modal.remove();
+        resolve(true);
+
+      } catch (error) {
+        errorBox.textContent = error.message;
+        submit.disabled = false;
+      }
+    };
+  });
+}
+
+
 // WYSYŁANIE KSIĄŻKI DO SUPABASE
+
 document.getElementById("book-form").addEventListener("submit", async function(event) {
   event.preventDefault();
+
+  const loggedIn = await requireLogin();
+
+  if (!loggedIn) return;
 
   const submitButton = document.getElementById("submit-button");
 
@@ -683,7 +846,7 @@ document.getElementById("book-form").addEventListener("submit", async function(e
   submitButton.textContent = "Wysyłanie...";
 
   try {
-    const { data, error } = await supabaseClient.rpc("submit_book", {
+    const { error } = await supabaseClient.rpc("submit_book", {
       p_title: title,
       p_author: author,
       p_description: description,
@@ -706,12 +869,7 @@ document.getElementById("book-form").addEventListener("submit", async function(e
 
   } catch(error) {
     console.error("Błąd wysyłania:", error);
-
-    alert(
-      "Nie udało się wysłać książki. " +
-      "Sprawdź połączenie z internetem i spróbuj ponownie. " +
-      "Szczegóły błędu znajdziesz w konsoli."
-    );
+    alert("Nie udało się wysłać książki: " + error.message);
 
   } finally {
     submitButton.disabled = false;
