@@ -739,7 +739,220 @@ window.addEventListener("resize", () => {
     renderPage();
   }, 150);
 });
+// ===== PANEL ADMINISTRATORA =====
 
+const adminNavButton = document.createElement("button");
+adminNavButton.textContent = "🔐 Panel administratora";
+adminNavButton.onclick = () => {
+  showSection("admin-panel");
+  refreshAdminPanel();
+};
+document.querySelector("nav").appendChild(adminNavButton);
+
+const adminSection = document.createElement("section");
+adminSection.id = "admin-panel";
+adminSection.className = "hidden";
+adminSection.innerHTML = `
+  <div class="panel">
+    <h2>🔐 Panel administratora</h2>
+    <div id="admin-status" class="status">Sprawdzanie konta...</div>
+
+    <form id="admin-login-form" class="hidden">
+      <label>Adres e-mail</label>
+      <input id="admin-email" type="email" required>
+
+      <label>Hasło</label>
+      <input id="admin-password" type="password" required>
+
+      <button type="submit">Zaloguj się</button>
+    </form>
+
+    <div id="admin-content" class="hidden">
+      <button id="admin-logout" class="secondary">Wyloguj</button>
+      <h3>📚 Oczekujące książki</h3>
+      <div id="pending-books"></div>
+    </div>
+  </div>
+`;
+
+document.querySelector("main").appendChild(adminSection);
+
+async function refreshAdminPanel() {
+  const status = document.getElementById("admin-status");
+  const loginForm = document.getElementById("admin-login-form");
+  const content = document.getElementById("admin-content");
+
+  loginForm.classList.add("hidden");
+  content.classList.add("hidden");
+  status.textContent = "Sprawdzanie konta...";
+
+  const { data: { user }, error } =
+    await supabaseClient.auth.getUser();
+
+  if (error || !user) {
+    status.textContent = "Zaloguj się na konto administratora.";
+    loginForm.classList.remove("hidden");
+    return;
+  }
+
+  const { data: admin, error: adminError } =
+    await supabaseClient
+      .from("admin_users")
+      .select("user_id")
+      .eq("user_id", user.id)
+      .maybeSingle();
+
+  if (adminError) {
+    status.textContent = "Błąd sprawdzania uprawnień: " + adminError.message;
+    return;
+  }
+
+  if (!admin) {
+    status.textContent = "To konto nie ma uprawnień administratora.";
+    return;
+  }
+
+  status.textContent = "Zalogowano jako administrator: " + user.email;
+  content.classList.remove("hidden");
+
+  await loadPendingBooks();
+}
+
+document.getElementById("admin-login-form")
+  .addEventListener("submit", async event => {
+    event.preventDefault();
+
+    const status = document.getElementById("admin-status");
+    status.textContent = "Logowanie...";
+
+    const email = document.getElementById("admin-email").value;
+    const password = document.getElementById("admin-password").value;
+
+    const { error } = await supabaseClient.auth.signInWithPassword({
+      email,
+      password
+    });
+
+    if (error) {
+      status.textContent = "Błąd logowania: " + error.message;
+      return;
+    }
+
+    document.getElementById("admin-password").value = "";
+    await refreshAdminPanel();
+  });
+
+document.getElementById("admin-logout")
+  .addEventListener("click", async () => {
+    await supabaseClient.auth.signOut();
+    await refreshAdminPanel();
+  });
+
+async function loadPendingBooks() {
+  const container = document.getElementById("pending-books");
+  container.textContent = "Ładowanie zgłoszeń...";
+
+  const { data: pending, error } = await supabaseClient
+    .from("books")
+    .select("id,title,author,description")
+    .eq("approved", false)
+    .order("id", { ascending: false });
+
+  if (error) {
+    container.textContent = "Błąd: " + error.message;
+    return;
+  }
+
+  container.innerHTML = "";
+
+  if (!pending || pending.length === 0) {
+    container.textContent = "Nie ma żadnych oczekujących książek.";
+    return;
+  }
+
+  for (const book of pending) {
+    const card = document.createElement("article");
+    card.className = "book";
+
+    const title = document.createElement("h3");
+    title.textContent = book.title;
+
+    const author = document.createElement("p");
+    author.textContent = "Autor: " + book.author;
+
+    const description = document.createElement("p");
+    description.textContent = book.description || "";
+
+    const chapters = document.createElement("div");
+    chapters.textContent = "Ładowanie rozdziałów...";
+
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    summary.textContent = "Podgląd książki";
+    details.append(summary, chapters);
+
+    const approve = document.createElement("button");
+    approve.textContent = "✅ Akceptuj";
+
+    const reject = document.createElement("button");
+    reject.textContent = "❌ Odrzuć";
+    reject.className = "secondary";
+
+    const { data: chapterData, error: chapterError } =
+      await supabaseClient
+        .from("chapters")
+        .select("title,content,chapter_number")
+        .eq("book_id", book.id)
+        .order("chapter_number", { ascending: true });
+
+    chapters.innerHTML = "";
+
+    if (chapterError) {
+      chapters.textContent = "Błąd pobierania rozdziałów.";
+    } else {
+      (chapterData || []).forEach(chapter => {
+        const heading = document.createElement("h4");
+        heading.textContent = chapter.title;
+
+        const text = document.createElement("p");
+        text.textContent = chapter.content;
+        text.style.whiteSpace = "pre-wrap";
+
+        chapters.append(heading, text);
+      });
+    }
+
+    approve.onclick = () => reviewBook(book.id, true);
+    reject.onclick = () => reviewBook(book.id, false);
+
+    card.append(title, author, description, details, approve, reject);
+    container.appendChild(card);
+  }
+}
+
+async function reviewBook(bookId, approve) {
+  const question = approve
+    ? "Czy na pewno zaakceptować tę książkę?"
+    : "Czy na pewno odrzucić i usunąć tę książkę?";
+
+  if (!confirm(question)) return;
+
+  const { error } = await supabaseClient.rpc("admin_review_book", {
+    p_book_id: bookId,
+    p_approve: approve
+  });
+
+  if (error) {
+    alert("Nie udało się wykonać operacji: " + error.message);
+    return;
+  }
+
+  alert(approve ? "Książka zaakceptowana!" : "Książka odrzucona.");
+  await loadPendingBooks();
+  await loadOnlineBooks();
+}
+
+// ===== KONIEC PANELU ADMINISTRATORA =====
 // START STRONY
 addChapter();
 renderBooks();
