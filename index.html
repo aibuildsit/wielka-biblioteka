@@ -234,11 +234,57 @@ footer{
 
 <section id="community" class="hidden">
   <div class="panel">
-    <h2>💬 Społeczność</h2>
-    <p>Już niedługo będzie tu miejsce na rozmowy czytelników!</p>
+    <h2>💬 Społeczność Wielkiej Biblioteki</h2>
+    <p>Poznaj innych czytelników, twórz znajomości i obserwuj autorów!</p>
+
+    <div id="community-profile">
+      <h3>👤 Twój profil</h3>
+      <div id="my-profile-info">
+        <p>Nie masz jeszcze profilu społecznościowego.</p>
+      </div>
+
+      <div id="create-profile-form">
+        <h3>Utwórz swój profil</h3>
+
+        <input id="profile-username"
+          type="text"
+          placeholder="Twój nick (3–20 znaków)"
+          maxlength="20">
+
+        <input id="profile-display-name"
+          type="text"
+          placeholder="Nazwa wyświetlana">
+
+        <textarea id="profile-bio"
+          placeholder="Napisz coś o sobie..."></textarea>
+
+        <button onclick="createCommunityProfile()">
+          Utwórz profil
+        </button>
+      </div>
+    </div>
+
+    <hr>
+
+    <h3>🔎 Znajdź czytelników</h3>
+
+    <input id="profile-search"
+      type="text"
+      placeholder="Wpisz nick użytkownika..."
+      oninput="searchProfiles()">
+
+    <div id="profile-results">
+      <p>Wpisz nick, aby znaleźć użytkowników.</p>
+    </div>
+
+    <hr>
+
+    <h3>⭐ Obserwowani użytkownicy</h3>
+    <div id="following-list">
+      <p>Zaloguj się, aby zobaczyć obserwowanych.</p>
+    </div>
   </div>
 </section>
-
 <section id="authors" class="hidden">
   <div class="panel">
     <h2>✍️ Autorzy</h2>
