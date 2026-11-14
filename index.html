@@ -341,11 +341,161 @@ let currentBook = null;
 let currentChapter = 0;
 let currentPage = 0;
 let pages = [];
+// OKNO LOGOWANIA I REJESTRACJI
+function showAuthModal() {
+  return new Promise(resolve => {
+    const modal = document.createElement("div");
 
-function showSection(id) {
+    modal.style.cssText = `
+      position:fixed;
+      inset:0;
+      background:#0009;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      z-index:999999;
+      padding:20px;
+    `;
+
+    modal.innerHTML = `
+      <div style="
+        background:white;
+        color:#38251c;
+        padding:25px;
+        border-radius:18px;
+        width:100%;
+        max-width:380px;
+      ">
+        <h2 id="auth-title">🔐 Zaloguj się</h2>
+
+        <p id="auth-info">
+          Zaloguj się, aby dodawać własne książki.
+        </p>
+
+        <input id="auth-email"
+          type="email"
+          placeholder="Adres e-mail">
+
+        <input id="auth-password"
+          type="password"
+          placeholder="Hasło">
+
+        <button id="auth-submit" style="width:100%">
+          Zaloguj się
+        </button>
+
+        <button id="auth-switch"
+          class="secondary"
+          style="width:100%;margin-top:10px">
+          Nie masz konta? Zarejestruj się
+        </button>
+
+        <button id="auth-cancel"
+          class="secondary"
+          style="width:100%;margin-top:10px">
+          Anuluj
+        </button>
+
+        <p id="auth-error" style="color:red"></p>
+      </div>
+    `;
+
+    document.body.appendChild(modal);
+
+    let registering = false;
+
+    const email = modal.querySelector("#auth-email");
+    const password = modal.querySelector("#auth-password");
+    const submit = modal.querySelector("#auth-submit");
+    const errorBox = modal.querySelector("#auth-error");
+
+    modal.querySelector("#auth-switch").onclick = () => {
+      registering = !registering;
+
+      modal.querySelector("#auth-title").textContent =
+        registering ? "📝 Rejestracja" : "🔐 Logowanie";
+
+      submit.textContent =
+        registering ? "Utwórz konto" : "Zaloguj się";
+
+      errorBox.textContent = "";
+    };
+
+    modal.querySelector("#auth-cancel").onclick = () => {
+      modal.remove();
+      resolve(false);
+    };
+
+    submit.onclick = async () => {
+      errorBox.textContent = "";
+
+      if (!email.value.trim() || !password.value) {
+        errorBox.textContent = "Uzupełnij e-mail i hasło.";
+        return;
+      }
+
+      submit.disabled = true;
+
+      try {
+        if (registering) {
+          const { data, error } =
+            await supabaseClient.auth.signUp({
+              email: email.value.trim(),
+              password: password.value
+            });
+
+          if (error) throw error;
+
+          if (!data.session) {
+            errorBox.textContent =
+              "Konto utworzone! Potwierdź e-mail, a następnie zaloguj się.";
+            registering = false;
+            modal.querySelector("#auth-title").textContent =
+              "🔐 Logowanie";
+            submit.textContent = "Zaloguj się";
+            submit.disabled = false;
+            return;
+          }
+
+        } else {
+          const { error } =
+            await supabaseClient.auth.signInWithPassword({
+              email: email.value.trim(),
+              password: password.value
+            });
+
+          if (error) throw error;
+        }
+
+        modal.remove();
+        resolve(true);
+
+      } catch (error) {
+        errorBox.textContent = error.message;
+        submit.disabled = false;
+      }
+    };
+  });
+}
+
+
+// PRZEŁĄCZANIE SEKCJI
+async function showSection(id) {
+
+  if (id === "add") {
+    const { data } = await supabaseClient.auth.getSession();
+
+    if (!data.session) {
+      const loggedIn = await showAuthModal();
+
+      if (!loggedIn) return;
+    }
+  }
+
   document.querySelectorAll("main section").forEach(section => {
     section.classList.add("hidden");
   });
+
   document.getElementById(id).classList.remove("hidden");
 }
 
